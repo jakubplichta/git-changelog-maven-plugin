@@ -1,0 +1,9 @@
+language: java
+install: true
+script: mvn verify javadoc:javadoc coveralls:report -Pcoverage
+jdk:
+  - oraclejdk8
+branches:
+  only:
+     - master
+sudo: false
