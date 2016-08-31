@@ -17,7 +17,6 @@
 
 package info.plichta.maven.plugins.changelog.model;
 
-import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.left;
+import static org.apache.commons.lang3.StringUtils.stripEnd;
 
 /**
  * Model class representing one GIT commit.
@@ -61,7 +61,7 @@ public class CommitWrapper {
     }
 
     public String getCommitLink() {
-        return StringUtils.stripEnd(gitHubUrl, "/") + "/commit/" + commit.getName();
+        return stripEnd(gitHubUrl, "/") + "/commit/" + commit.getName();
     }
 
     public List<CommitWrapper> getChildren() {

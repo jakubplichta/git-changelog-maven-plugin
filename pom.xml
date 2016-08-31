@@ -23,8 +23,17 @@
 
     <groupId>info.plichta.maven.plugins</groupId>
     <artifactId>git-changelog-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
+    <name>${project.artifactId}</name>
+    <description>git changelog plugin</description>
+    <url>https://github.com/jakubplichta/git-changelog-maven-plugin</url>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
     <scm>
         <url>https://github.com/jakubplichta/git-changelog-maven-plugin</url>
@@ -32,6 +41,7 @@
         <developerConnection>scm:git:${basedir}</developerConnection>
         <tag>HEAD</tag>
     </scm>
+
     <developers>
         <developer>
             <name>Jakub Plichta</name>
@@ -149,6 +159,24 @@
                 </configuration>
             </plugin>
             <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Name>info/plichta/maven/plugins</Name>
+                            <Specification-Title>${project.description}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>info.plichta</Specification-Vendor>
+                            <Implementation-Title>${project.description}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>info.plichta</Implementation-Vendor>
+                            <Implementation-Vendor-Id>info.plichta</Implementation-Vendor-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
                     <preparationGoals>clean git-changelog:git-changelog scm:checkin -DpushChanges=false
@@ -166,6 +194,32 @@
                 <version>${project.version}</version>
                 <configuration>
                     <gitHubUrl>${project.scm.url}</gitHubUrl>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>analyze</id>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <failOnWarning>true</failOnWarning>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.6</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>sonatype-nexus-staging</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
