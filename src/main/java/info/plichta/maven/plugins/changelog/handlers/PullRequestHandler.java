@@ -22,7 +22,7 @@ import info.plichta.maven.plugins.changelog.model.CommitWrapper;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.codehaus.plexus.util.StringUtils.stripEnd;
+import static org.apache.commons.lang3.StringUtils.stripEnd;
 
 /**
  * {@link CommitHandler} capable of detecting Pull Request references in commit messages.
