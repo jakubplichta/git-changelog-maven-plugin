@@ -183,13 +183,13 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <preparationGoals>clean git-changelog:git-changelog scm:checkin -DpushChanges=false -Dincludes=RELEASENOTES.md -Dmessage="[maven-release-plugin] Update RELEASENOTES.md" verify</preparationGoals>
-                    <completionGoals>git-changelog:git-changelog scm:checkin -DpushChanges=false -Dincludes=RELEASENOTES.md -Dmessage="[maven-release-plugin] Update RELEASENOTES.md"</completionGoals>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<artifactId>maven-release-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<preparationGoals>clean git-changelog:git-changelog scm:checkin -DpushChanges=false -Dincludes=RELEASENOTES.md -Dmessage="[maven-release-plugin] Update RELEASENOTES.md" verify</preparationGoals>-->
+                    <!--<completionGoals>git-changelog:git-changelog scm:checkin -DpushChanges=false -Dincludes=RELEASENOTES.md -Dmessage="[maven-release-plugin] Update RELEASENOTES.md"</completionGoals>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>info.plichta.maven.plugins</groupId>
                 <artifactId>git-changelog-maven-plugin</artifactId>
