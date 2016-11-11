@@ -66,6 +66,9 @@ public class ChangeLogMojo extends AbstractMojo {
     @Parameter(defaultValue = "true")
     private boolean deduplicateChildCommits;
 
+    @Parameter(defaultValue = "true")
+    private boolean fetchTags;
+
     @Parameter
     private String jiraServer;
 
@@ -89,8 +92,8 @@ public class ChangeLogMojo extends AbstractMojo {
         if (jiraServer != null) {
             commitHandlers.add(new JiraHandler(jiraServer));
         }
-        final RepositoryProcessor repositoryProcessor = new RepositoryProcessor(deduplicateChildCommits, toRef, nextRelease, gitHubUrl,
-                commitFilter, commitHandlers, getLog());
+        final RepositoryProcessor repositoryProcessor = new RepositoryProcessor(deduplicateChildCommits, fetchTags, toRef,
+                nextRelease, gitHubUrl, commitFilter, commitHandlers, getLog());
 
         final List<TagWrapper> tags;
         try {

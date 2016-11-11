@@ -21,6 +21,8 @@ import info.plichta.maven.plugins.changelog.model.CommitWrapper;
 import info.plichta.maven.plugins.changelog.model.TagWrapper;
 import info.plichta.maven.plugins.changelog.handlers.CommitHandler;
 import org.apache.maven.plugin.logging.Log;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -28,6 +30,7 @@ import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.TagOpt;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,15 +50,17 @@ class RepositoryProcessor {
     private final Log log;
 
     private final boolean deduplicateChildCommits;
+    private final boolean fetchTags;
     private final String toRef;
     private final String nextRelease;
     private final String gitHubUrl;
     private final Predicate<RevCommit> commitFilter;
     private final List<CommitHandler> commitHandlers = new ArrayList<>();
 
-    public RepositoryProcessor(boolean deduplicateChildCommits, String toRef, String nextRelease, String gitHubUrl,
-                        Predicate<RevCommit> commitFilter, List<CommitHandler> commitHandlers, Log log) {
+    public RepositoryProcessor(boolean deduplicateChildCommits, boolean fetchTags, String toRef, String nextRelease, String gitHubUrl,
+                               Predicate<RevCommit> commitFilter, List<CommitHandler> commitHandlers, Log log) {
         this.deduplicateChildCommits = deduplicateChildCommits;
+        this.fetchTags = fetchTags;
         this.toRef = toRef;
         this.nextRelease = nextRelease;
         this.gitHubUrl = gitHubUrl;
@@ -67,6 +71,9 @@ class RepositoryProcessor {
 
     public List<TagWrapper> process(File repoRoot) throws IOException {
         try (Repository repository = new RepositoryBuilder().findGitDir(repoRoot).build()) {
+            if (fetchTags) {
+                fetchTags(repository);
+            }
             return process(repository);
         }
     }
@@ -121,6 +128,14 @@ class RepositoryProcessor {
         }
 
         return tags;
+    }
+
+    private void fetchTags(Repository repository) {
+        try {
+            Git.wrap(repository).fetch().setTagOpt(TagOpt.FETCH_TAGS).call();
+        } catch (GitAPIException e) {
+            log.error("Cannot fetch tags from remote repository", e);
+        }
     }
 
     private Map<ObjectId, TagWrapper> extractTags(Repository repository, RevWalk walk) throws IOException {
