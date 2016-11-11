@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class CommitFilter implements Predicate<RevCommit> {
+class CommitFilter implements Predicate<RevCommit> {
     private final Predicate<RevCommit> predicate;
 
     CommitFilter(String include, String exclude) {

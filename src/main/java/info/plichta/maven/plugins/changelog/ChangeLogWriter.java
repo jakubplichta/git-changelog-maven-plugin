@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-public class ChangeLogWriter {
+class ChangeLogWriter {
 
     private final Log log;
     private final Mustache mustache;

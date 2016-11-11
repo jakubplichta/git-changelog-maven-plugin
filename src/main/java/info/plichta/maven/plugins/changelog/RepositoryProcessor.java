@@ -42,7 +42,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RepositoryProcessor {
+class RepositoryProcessor {
     private static final Pattern TAG_PATTERN = Pattern.compile(".*-([^-]+?)$");
 
     private final Log log;
