@@ -17,9 +17,9 @@
 
 package info.plichta.maven.plugins.changelog;
 
+import info.plichta.maven.plugins.changelog.handlers.CommitHandler;
 import info.plichta.maven.plugins.changelog.model.CommitWrapper;
 import info.plichta.maven.plugins.changelog.model.TagWrapper;
-import info.plichta.maven.plugins.changelog.handlers.CommitHandler;
 import org.apache.maven.plugin.logging.Log;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
@@ -37,13 +37,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RepositoryProcessor {
-    private static final Pattern TAG_PATTERN = Pattern.compile(".*-([^-]+?)$");
+    private final Pattern tagPattern;
 
     private final Log log;
 
@@ -55,13 +54,15 @@ public class RepositoryProcessor {
     private final List<CommitHandler> commitHandlers = new ArrayList<>();
 
     public RepositoryProcessor(boolean deduplicateChildCommits, String toRef, String nextRelease, String gitHubUrl,
-                        Predicate<RevCommit> commitFilter, List<CommitHandler> commitHandlers, Log log) {
+                               Predicate<RevCommit> commitFilter, List<CommitHandler> commitHandlers,
+                               String tagPrefix, Log log) {
         this.deduplicateChildCommits = deduplicateChildCommits;
         this.toRef = toRef;
         this.nextRelease = nextRelease;
         this.gitHubUrl = gitHubUrl;
         this.commitFilter = commitFilter;
         this.commitHandlers.addAll(commitHandlers);
+        tagPattern = Pattern.compile(tagPrefix + "-([^-]+?)$");
         this.log = log;
     }
 
@@ -128,11 +129,11 @@ public class RepositoryProcessor {
         for (Entry<String, Ref> entry : repository.getTags().entrySet()) {
             String name = entry.getKey();
 
-            final Matcher matcher = TAG_PATTERN.matcher(name);
+            final Matcher matcher = tagPattern.matcher(name);
             if (matcher.matches()) {
                 name = matcher.group(1);
+                tagMapping.put(walk.parseCommit(entry.getValue().getObjectId()), new TagWrapper(name));
             }
-            tagMapping.put(walk.parseCommit(entry.getValue().getObjectId()), new TagWrapper(name));
         }
         return tagMapping;
     }
