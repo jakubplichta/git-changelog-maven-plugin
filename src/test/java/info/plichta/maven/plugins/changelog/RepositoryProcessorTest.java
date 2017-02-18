@@ -22,11 +22,13 @@ import info.plichta.maven.plugins.changelog.model.TagWrapper;
 import org.apache.maven.plugin.logging.Log;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.junit.RepositoryTestCase;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +47,7 @@ import static org.mockito.Mockito.mock;
 
 public class RepositoryProcessorTest extends RepositoryTestCase {
 
+    private static final String TAG_PREFIX = "test-test";
     private static final String V_1 = "1";
     private static final String V_2 = "2";
     private static final String V_3 = "3";
@@ -57,7 +60,8 @@ public class RepositoryProcessorTest extends RepositoryTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        processor = new RepositoryProcessor(false, "HEAD", NEXT_VERSION, "gitHubUrl", commit -> true, emptyList(), mock(Log.class));
+        processor = new RepositoryProcessor(false, "HEAD", NEXT_VERSION, "gitHubUrl",
+                commit -> true, emptyList(), "/", TAG_PREFIX, mock(Log.class));
     }
 
     @Test
@@ -69,15 +73,15 @@ public class RepositoryProcessorTest extends RepositoryTestCase {
     @Test
     public void processSimpleMainline() throws Exception {
         try (Git git = new Git(db)) {
-            git.commit().setMessage("first").call();
-            git.tag().setName(V_1).call();
+            commitWithFile(git, "first");
+            git.tag().setName(TAG_PREFIX + "-" + V_1).call();
             git.branchCreate().setName("branch").setStartPoint("HEAD").call();
             git.checkout().setName("branch").call();
-            git.commit().setMessage("branch_1").call();
-            final RevCommit branch = git.commit().setMessage("branch_2").call();
+            commitWithFile(git, "branch_1");
+            final RevCommit branch = commitWithFile(git, "branch_2");
             git.checkout().setName(MASTER).call();
             git.merge().include(branch).setFastForward(FastForwardMode.NO_FF).setMessage("merge1").call();
-            git.tag().setName(V_2).call();
+            git.tag().setName(TAG_PREFIX + "-" + V_2).call();
         }
 
         final List<TagWrapper> tags = processor.process(db);
@@ -90,20 +94,20 @@ public class RepositoryProcessorTest extends RepositoryTestCase {
     @Test
     public void processMainlineWithLongLivingBranches() throws Exception {
         try (Git git = new Git(db)) {
-            git.commit().setMessage("first").call();
-            git.tag().setName(V_1).call();
+            commitWithFile(git, "first");
+            git.tag().setName(TAG_PREFIX + "-" + V_1).call();
             git.branchCreate().setName("branch").setStartPoint("HEAD").call();
             git.checkout().setName("branch").call();
-            git.commit().setMessage("branch_1").call();
-            RevCommit branch = git.commit().setMessage("branch_2").call();
+            commitWithFile(git, "branch_1");
+            RevCommit branch = commitWithFile(git, "branch_2");
             git.checkout().setName(MASTER).call();
             git.merge().include(branch).setFastForward(FastForwardMode.NO_FF).setMessage("merge1").call();
-            git.tag().setName(V_2).call();
+            git.tag().setName(TAG_PREFIX + "-" + V_2).call();
             git.checkout().setName("branch").call();
-            branch = git.commit().setMessage("branch_3").call();
+            branch = commitWithFile(git, "branch_3");
             git.checkout().setName(MASTER).call();
             git.merge().include(branch).setFastForward(FastForwardMode.NO_FF).setMessage("merge2").call();
-            git.tag().setName(V_3).call();
+            git.tag().setName(TAG_PREFIX + "-" + V_3).call();
         }
 
         final List<TagWrapper> tags = processor.process(db);
@@ -112,6 +116,12 @@ public class RepositoryProcessorTest extends RepositoryTestCase {
         assertTag(tags.get(1), V_3, of("merge2", singletonList("branch_3")));
         assertTag(tags.get(2), V_2, of("merge1", asList("branch_2", "branch_1")));
         assertTag(tags.get(3), V_1, of("first", emptyList()));
+    }
+
+    private RevCommit commitWithFile(Git git, String commit) throws IOException, GitAPIException {
+        writeTrashFile(commit, commit);
+        git.add().addFilepattern(commit).call();
+        return git.commit().setMessage(commit).setAll(true).call();
     }
 
     private void assertTag(TagWrapper tag, String name, Map<String, List<String>> commits) {

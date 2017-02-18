@@ -72,6 +72,12 @@ public class ChangeLogMojo extends AbstractMojo {
     @Parameter(defaultValue = "HEAD")
     private String toRef;
 
+    @Parameter(defaultValue = "")
+    private String pathFilter;
+
+    @Parameter(property = "project.artifactId")
+    private String tagPrefix;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final String template = Optional.of(templateFile)
@@ -90,7 +96,7 @@ public class ChangeLogMojo extends AbstractMojo {
             commitHandlers.add(new JiraHandler(jiraServer));
         }
         final RepositoryProcessor repositoryProcessor = new RepositoryProcessor(deduplicateChildCommits, toRef, nextRelease, gitHubUrl,
-                commitFilter, commitHandlers, getLog());
+                commitFilter, commitHandlers, pathFilter, tagPrefix, getLog());
 
         final List<TagWrapper> tags;
         try {
