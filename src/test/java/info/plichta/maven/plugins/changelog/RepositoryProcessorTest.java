@@ -61,7 +61,7 @@ public class RepositoryProcessorTest extends RepositoryTestCase {
     public void setUp() throws Exception {
         super.setUp();
         processor = new RepositoryProcessor(false, "HEAD", NEXT_VERSION, "gitHubUrl",
-                commit -> true, emptyList(), TAG_PREFIX, mock(Log.class));
+                commit -> true, emptyList(), "/", TAG_PREFIX, mock(Log.class));
     }
 
     @Test

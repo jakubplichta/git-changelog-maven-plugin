@@ -21,13 +21,20 @@ import info.plichta.maven.plugins.changelog.handlers.CommitHandler;
 import info.plichta.maven.plugins.changelog.model.CommitWrapper;
 import info.plichta.maven.plugins.changelog.model.TagWrapper;
 import org.apache.maven.plugin.logging.Log;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +48,8 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 public class RepositoryProcessor {
     private final Pattern tagPattern;
 
@@ -52,15 +61,21 @@ public class RepositoryProcessor {
     private final String gitHubUrl;
     private final Predicate<RevCommit> commitFilter;
     private final List<CommitHandler> commitHandlers = new ArrayList<>();
+    private final TreeFilter pathFilter;
 
     public RepositoryProcessor(boolean deduplicateChildCommits, String toRef, String nextRelease, String gitHubUrl,
-                               Predicate<RevCommit> commitFilter, List<CommitHandler> commitHandlers,
+                               Predicate<RevCommit> commitFilter, List<CommitHandler> commitHandlers, String pathFilter,
                                String tagPrefix, Log log) {
         this.deduplicateChildCommits = deduplicateChildCommits;
         this.toRef = toRef;
         this.nextRelease = nextRelease;
         this.gitHubUrl = gitHubUrl;
         this.commitFilter = commitFilter;
+        if (!isBlank(pathFilter) && !"/".equals(pathFilter)) {
+            this.pathFilter = PathFilter.create(pathFilter);
+        } else {
+            this.pathFilter = PathFilter.ALL;
+        }
         this.commitHandlers.addAll(commitHandlers);
         tagPattern = Pattern.compile(tagPrefix + "-([^-]+?)$");
         this.log = log;
@@ -95,7 +110,7 @@ public class RepositoryProcessor {
                 }
                 final CommitWrapper commitWrapper = processCommit(commit);
 
-                if (commitFilter.test(commit)) {
+                if (commitFilter.test(commit) && isInPath(repository, walk, commit)) {
                     currentTag.getCommits().add(commitWrapper);
                 }
                 final RevCommit[] parents = commit.getParents();
@@ -108,7 +123,7 @@ public class RepositoryProcessor {
                         childWalk.next();
                         for (RevCommit childCommit : childWalk) {
                             final CommitWrapper childWrapper = processCommit(childCommit);
-                            if (commitFilter.test(childCommit) && !(deduplicateChildCommits && Objects.equals(commitWrapper.getTitle(), childWrapper.getTitle()))) {
+                            if (commitFilter.test(childCommit) && isInPath(repository, walk, commit) && !(deduplicateChildCommits && Objects.equals(commitWrapper.getTitle(), childWrapper.getTitle()))) {
                                 commitWrapper.getChildren().add(childWrapper);
                             }
                         }
@@ -136,6 +151,25 @@ public class RepositoryProcessor {
             }
         }
         return tagMapping;
+    }
+
+    private boolean isInPath(Repository repository, RevWalk walk, RevCommit commit) throws IOException {
+        if (commit.getParentCount() == 0) {
+            RevTree tree = commit.getTree();
+            try (TreeWalk treeWalk = new TreeWalk(repository)) {
+                treeWalk.addTree(tree);
+                treeWalk.setRecursive(true);
+                treeWalk.setFilter(pathFilter);
+                return treeWalk.next();
+            }
+        } else {
+            DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
+            df.setRepository(repository);
+            df.setPathFilter(pathFilter);
+            RevCommit parent = walk.parseCommit(commit.getParent(0).getId());
+            List<DiffEntry> diffs = df.scan(parent.getTree(), commit.getTree());
+            return !diffs.isEmpty();
+        }
     }
 
     private CommitWrapper processCommit(RevCommit commit) {
