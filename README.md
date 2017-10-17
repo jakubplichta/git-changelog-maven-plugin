@@ -97,6 +97,7 @@ The _git-changelog-maven-plugin_ provides following data structures to _Mustache
             - title
             - shortHash
             - commitLink
+            - commitTime
         - extensions
             - jira
                 * title
