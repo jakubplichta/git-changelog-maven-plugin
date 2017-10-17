@@ -31,6 +31,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,6 +79,9 @@ public class ChangeLogMojo extends AbstractMojo {
     @Parameter(property = "project.artifactId")
     private String tagPrefix;
 
+    @Parameter
+    private Date ignoreOlderThen;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final String template = Optional.of(templateFile)
@@ -86,7 +90,7 @@ public class ChangeLogMojo extends AbstractMojo {
                 .orElse(DEFAULT_TEMPLATE);
 
         final ChangeLogWriter logGenerator = new ChangeLogWriter(template, getLog());
-        final CommitFilter commitFilter = new CommitFilter(includeCommits, excludeCommits);
+        final CommitFilter commitFilter = new CommitFilter(includeCommits, excludeCommits, ignoreOlderThen);
 
         final List<CommitHandler> commitHandlers = new ArrayList<>();
         if (gitHubUrl != null) {
