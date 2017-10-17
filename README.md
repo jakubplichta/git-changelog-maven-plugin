@@ -62,6 +62,9 @@ Following configuration parameters are supported by the _git-changelog-maven-plu
 * GitHub repository URL to be used. If present commit messages containing GitHub pull request references are extended
 with relevant details.
 
+**ignoreOlderThen**, _optional_
+* Ignore commits older than date (format: YYYY-MM-dd HH:mm:ss)
+
 ### Automatic change log generation during Maven release
 
 You can configure Maven release plugin to update change log with each release. 

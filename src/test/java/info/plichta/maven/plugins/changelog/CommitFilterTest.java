@@ -23,6 +23,8 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -42,29 +44,43 @@ public class CommitFilterTest extends RepositoryTestCase {
 
     @Test
     public void testIncludeAllNoExclude() throws Exception {
-        final CommitFilter filter = new CommitFilter(".*", null);
+        final CommitFilter filter = new CommitFilter(".*", null,null);
         assertThat(filter.test(commit), is(true));
         assertThat(filter.test(commit2), is(true));
     }
 
     @Test
     public void testExcludeAll() {
-        final CommitFilter filter = new CommitFilter(".*", ".*");
+        final CommitFilter filter = new CommitFilter(".*", ".*",null);
         assertThat(filter.test(commit), is(false));
         assertThat(filter.test(commit2), is(false));
     }
 
     @Test
     public void testIncludeNone() {
-        final CommitFilter filter = new CommitFilter("", null);
+        final CommitFilter filter = new CommitFilter("", null,null);
         assertThat(filter.test(commit), is(false));
         assertThat(filter.test(commit2), is(false));
     }
 
     @Test
     public void testExcludeSome() {
-        final CommitFilter filter = new CommitFilter(".*", ".*i.*");
+        final CommitFilter filter = new CommitFilter(".*", ".*i.*",null);
         assertThat(filter.test(commit), is(false));
+        assertThat(filter.test(commit2), is(true));
+    }
+
+    @Test
+    public void testExcludeAllByTime() {
+        final CommitFilter filter = new CommitFilter(".*", null,new Date());
+        assertThat(filter.test(commit), is(false));
+        assertThat(filter.test(commit2), is(false));
+    }
+
+    @Test
+    public void testIncludeAllByTime() {
+        final CommitFilter filter = new CommitFilter(".*", null,new Date(1));
+        assertThat(filter.test(commit), is(true));
         assertThat(filter.test(commit2), is(true));
     }
 
