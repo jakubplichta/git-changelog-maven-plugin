@@ -19,8 +19,13 @@ package info.plichta.maven.plugins.changelog.model;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.left;
 import static org.apache.commons.lang3.StringUtils.stripEnd;
@@ -29,11 +34,8 @@ import static org.apache.commons.lang3.StringUtils.stripEnd;
  * Model class representing one GIT commit.
  */
 public class CommitWrapper {
-
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final long MILLISECONDS = 1000L;
-
 
     private final String gitHubUrl;
     private final RevCommit commit;
@@ -77,6 +79,6 @@ public class CommitWrapper {
     }
 
     public String getCommitTime() {
-        return DATE_FORMAT.format(new Date(commit.getCommitTime() * MILLISECONDS));
+        return Instant.ofEpochMilli(commit.getCommitTime() * MILLISECONDS).atZone(ZoneId.systemDefault()).toLocalDateTime().format(DATE_FORMAT);
     }
 }

@@ -18,10 +18,10 @@
 package info.plichta.maven.plugins.changelog;
 
 import info.plichta.maven.plugins.changelog.handlers.CommitHandler;
-import info.plichta.maven.plugins.changelog.model.ChangeLog;
-import info.plichta.maven.plugins.changelog.model.TagWrapper;
 import info.plichta.maven.plugins.changelog.handlers.JiraHandler;
 import info.plichta.maven.plugins.changelog.handlers.PullRequestHandler;
+import info.plichta.maven.plugins.changelog.model.ChangeLog;
+import info.plichta.maven.plugins.changelog.model.TagWrapper;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -30,8 +30,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,7 +80,7 @@ public class ChangeLogMojo extends AbstractMojo {
     private String tagPrefix;
 
     @Parameter
-    private Date ignoreOlderThen;
+    private LocalDateTime ignoreOlderThen;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

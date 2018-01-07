@@ -19,7 +19,8 @@ package info.plichta.maven.plugins.changelog;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -29,10 +30,9 @@ public class CommitFilter implements Predicate<RevCommit> {
 
     private static final long MILLISECONDS = 1000;
 
-    CommitFilter(final String include, final String exclude, final Date ignoreOlderThen) {
+    CommitFilter(final String include, final String exclude, final LocalDateTime ignoreOlderThen) {
         final Pattern includePattern = Pattern.compile(include, Pattern.MULTILINE | Pattern.DOTALL);
         final Optional<Pattern> excludePattern = Optional.ofNullable(exclude).map((regex) -> Pattern.compile(regex, Pattern.MULTILINE | Pattern.DOTALL));
-
 
         final Predicate<RevCommit> includePred =
                 revCommit -> includePattern.matcher(revCommit.getFullMessage()).matches();
@@ -40,14 +40,12 @@ public class CommitFilter implements Predicate<RevCommit> {
                 revCommit -> excludePattern.map(p -> p.matcher(revCommit.getFullMessage()).matches()).orElse(false);
         final int maxTime = getMinimumCommitTime(ignoreOlderThen);
         final Predicate<RevCommit> timePred = revCommit -> revCommit.getCommitTime() >= maxTime;
-
-
         predicate = includePred.and(excludePred.negate()).and(timePred);
     }
 
-    private int getMinimumCommitTime(Date ignoreOlderThen) {
+    private int getMinimumCommitTime(LocalDateTime ignoreOlderThen) {
         if (ignoreOlderThen != null) {
-            return (int) (ignoreOlderThen.getTime() / MILLISECONDS);
+            return (int) (ignoreOlderThen.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() / MILLISECONDS);
         } else {
             return 0;
         }
