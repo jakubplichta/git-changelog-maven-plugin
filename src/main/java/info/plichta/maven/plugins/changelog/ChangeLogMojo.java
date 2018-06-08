@@ -82,8 +82,15 @@ public class ChangeLogMojo extends AbstractMojo {
     @Parameter
     private LocalDateTime ignoreOlderThen;
 
+    @Parameter(defaultValue = "false")
+    private boolean skip;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            return;     // execution skipped
+        }
+
         final String template = Optional.of(templateFile)
                 .filter(File::canRead)
                 .map(File::toString)
