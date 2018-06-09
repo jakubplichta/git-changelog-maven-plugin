@@ -17,7 +17,7 @@ The _git-changelog-maven-plugin_ is available in Maven Central Repository, to us
 <plugin>
     <groupId>info.plichta.maven.plugins</groupId>
     <artifactId>git-changelog-maven-plugin</artifactId>
-    <version>0.1.0</version>
+    <version>0.4.0</version>
 </plugin>
 ```
 

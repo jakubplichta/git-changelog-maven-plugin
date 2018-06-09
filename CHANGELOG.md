@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.4.0
+* [PR #14](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/14) FEATURE: introduce native skip option via &lt;skip&gt; configuration parameter
+* [PR #13](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/13) Update CHANGELOG.md
+
 ## 0.3.0
 * [PR #12](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/12) Ignore older than and commit time.
     * Change to java8 Date/Time API Remove empty lines [c453497](https://github.com/jakubplichta/git-changelog-maven-plugin/commit/c45349764321280a83ccda400f1b15f689b4c54f)
