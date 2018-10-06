@@ -1,6 +1,6 @@
 # git-changelog-maven-plugin
 
-[![Build Status](https://travis-ci.org/jakubplichta/git-changelog-maven-plugin.svg?branch=master)](https://travis-ci.org/jakubplichta/git-changelog-maven-plugin) [![Coverage Status](https://coveralls.io/repos/jakubplichta/git-changelog-maven-plugin/badge.svg?branch=master)](https://coveralls.io/r/jakubplichta/git-changelog-maven-plugin?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.plichta.maven.plugins/git-changelog-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.plichta.maven.plugins/git-changelog-maven-plugin)
+[![Build Status](https://travis-ci.org/jakubplichta/git-changelog-maven-plugin.svg?branch=master)](https://travis-ci.org/jakubplichta/git-changelog-maven-plugin) [![Coverage Status](https://coveralls.io/repos/jakubplichta/git-changelog-maven-plugin/badge.svg?branch=master)](https://coveralls.io/r/jakubplichta/git-changelog-maven-plugin?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.plichta.maven.plugins/git-changelog-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.plichta.maven.plugins/git-changelog-maven-plugin) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=jakubplichta/git-changelog-maven-plugin)](https://dependabot.com)
 
 ## Introduction
 
