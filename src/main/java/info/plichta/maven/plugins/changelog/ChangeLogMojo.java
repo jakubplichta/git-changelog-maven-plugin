@@ -17,6 +17,8 @@
 
 package info.plichta.maven.plugins.changelog;
 
+import static org.apache.commons.lang3.StringUtils.stripEnd;
+
 import info.plichta.maven.plugins.changelog.handlers.CommitHandler;
 import info.plichta.maven.plugins.changelog.handlers.JiraHandler;
 import info.plichta.maven.plugins.changelog.handlers.PullRequestHandler;
@@ -61,6 +63,9 @@ public class ChangeLogMojo extends AbstractMojo {
     @Parameter
     private String gitHubUrl;
 
+    @Parameter
+    private String scmUrl;
+
     @Parameter(property = "project.version")
     private String nextRelease;
 
@@ -100,13 +105,14 @@ public class ChangeLogMojo extends AbstractMojo {
         final CommitFilter commitFilter = new CommitFilter(includeCommits, excludeCommits, ignoreOlderThen);
 
         final List<CommitHandler> commitHandlers = new ArrayList<>();
-        if (gitHubUrl != null) {
+        if (gitHubUrl != null || scmUrl != null) {
             commitHandlers.add(new PullRequestHandler(gitHubUrl));
         }
         if (jiraServer != null) {
             commitHandlers.add(new JiraHandler(jiraServer));
         }
-        final RepositoryProcessor repositoryProcessor = new RepositoryProcessor(deduplicateChildCommits, toRef, nextRelease, gitHubUrl,
+        final RepositoryProcessor repositoryProcessor = new RepositoryProcessor(deduplicateChildCommits, toRef, nextRelease,
+                constructScmUrl(),
                 commitFilter, commitHandlers, pathFilter, tagPrefix, getLog());
 
         final List<TagWrapper> tags;
@@ -116,6 +122,16 @@ public class ChangeLogMojo extends AbstractMojo {
             throw new MojoExecutionException("Cannot process repository " + repoRoot, e);
         }
         logGenerator.write(outputFile, new ChangeLog(reportTitle, tags));
+    }
+
+    private String constructScmUrl() {
+        if (gitHubUrl != null) {
+            return stripEnd(gitHubUrl, "/") + "/commit/";
+        }
+        if (scmUrl != null) {
+            return stripEnd(scmUrl, "/");
+        }
+        return null;
     }
 
 }

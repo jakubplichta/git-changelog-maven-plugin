@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.left;
-import static org.apache.commons.lang3.StringUtils.stripEnd;
 
 /**
  * Model class representing one GIT commit.
@@ -37,15 +36,15 @@ public class CommitWrapper {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final long MILLISECONDS = 1000L;
 
-    private final String gitHubUrl;
+    private final String scmUrl;
     private final RevCommit commit;
     private String title;
 
     private final Map<String, Object> extensions = new HashMap<>();
     private final List<CommitWrapper> children = new ArrayList<>();
 
-    public CommitWrapper(RevCommit commit, String gitHubUrl) {
-        this.gitHubUrl = gitHubUrl;
+    public CommitWrapper(RevCommit commit, String scmUrl) {
+        this.scmUrl = scmUrl;
         this.commit = commit;
         this.title = commit.getShortMessage();
     }
@@ -67,7 +66,7 @@ public class CommitWrapper {
     }
 
     public String getCommitLink() {
-        return stripEnd(gitHubUrl, "/") + "/commit/" + commit.getName();
+        return scmUrl == null ? commit.getName() : scmUrl + "/" + commit.getName();
     }
 
     public List<CommitWrapper> getChildren() {
