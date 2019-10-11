@@ -126,7 +126,7 @@ public class ChangeLogMojo extends AbstractMojo {
 
     private String constructScmUrl() {
         if (gitHubUrl != null) {
-            return stripEnd(gitHubUrl, "/") + "/commit/";
+            return stripEnd(gitHubUrl, "/") + "/commit";
         }
         if (scmUrl != null) {
             return stripEnd(scmUrl, "/");
