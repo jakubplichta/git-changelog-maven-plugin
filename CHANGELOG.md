@@ -1,6 +1,9 @@
 # Change Log
 
-## 0.5.0
+## 0.5.1
+* Remove redundant slash in GitHub URI [57f0935](https://github.com/jakubplichta/git-changelog-maven-plugin/commit/57f09353d4d4a98e435e182fa1ea598584849527)
+* [PR #72](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/72) [maven-release-plugin] release git-changelog-maven-plugin-0.5.0
+* [PR #71](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/71) Update README.md and CHANGELOG.md
 * [PR #69](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/69) Support links to other repos than GitHub
     * Make CommitWraper GitHub independent [c9e76fa](https://github.com/jakubplichta/git-changelog-maven-plugin/commit/c9e76fa067c1cfb56682a599cc697703504b1af0)
 * [PR #68](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/68) Bump mockito-core from 3.0.0 to 3.1.0
