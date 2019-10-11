@@ -17,6 +17,8 @@
 
 package info.plichta.maven.plugins.changelog;
 
+import static org.apache.commons.lang3.StringUtils.stripEnd;
+
 import info.plichta.maven.plugins.changelog.handlers.CommitHandler;
 import info.plichta.maven.plugins.changelog.handlers.JiraHandler;
 import info.plichta.maven.plugins.changelog.handlers.PullRequestHandler;
@@ -106,7 +108,8 @@ public class ChangeLogMojo extends AbstractMojo {
         if (jiraServer != null) {
             commitHandlers.add(new JiraHandler(jiraServer));
         }
-        final RepositoryProcessor repositoryProcessor = new RepositoryProcessor(deduplicateChildCommits, toRef, nextRelease, gitHubUrl,
+        final RepositoryProcessor repositoryProcessor = new RepositoryProcessor(deduplicateChildCommits, toRef, nextRelease,
+                constructScmUrl(),
                 commitFilter, commitHandlers, pathFilter, tagPrefix, getLog());
 
         final List<TagWrapper> tags;
@@ -116,6 +119,10 @@ public class ChangeLogMojo extends AbstractMojo {
             throw new MojoExecutionException("Cannot process repository " + repoRoot, e);
         }
         logGenerator.write(outputFile, new ChangeLog(reportTitle, tags));
+    }
+
+    private String constructScmUrl() {
+        return stripEnd(gitHubUrl, "/") + "/commit/";
     }
 
 }
