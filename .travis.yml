@@ -7,3 +7,4 @@ branches:
   only:
      - master
 sudo: false
+dist: trusty
