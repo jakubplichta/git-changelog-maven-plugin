@@ -63,6 +63,9 @@ public class ChangeLogMojo extends AbstractMojo {
     @Parameter
     private String gitHubUrl;
 
+    @Parameter
+    private String scmUrl;
+
     @Parameter(property = "project.version")
     private String nextRelease;
 
@@ -102,7 +105,7 @@ public class ChangeLogMojo extends AbstractMojo {
         final CommitFilter commitFilter = new CommitFilter(includeCommits, excludeCommits, ignoreOlderThen);
 
         final List<CommitHandler> commitHandlers = new ArrayList<>();
-        if (gitHubUrl != null) {
+        if (gitHubUrl != null || scmUrl != null) {
             commitHandlers.add(new PullRequestHandler(gitHubUrl));
         }
         if (jiraServer != null) {
@@ -122,7 +125,13 @@ public class ChangeLogMojo extends AbstractMojo {
     }
 
     private String constructScmUrl() {
-        return stripEnd(gitHubUrl, "/") + "/commit/";
+        if (gitHubUrl != null) {
+            return stripEnd(gitHubUrl, "/") + "/commit/";
+        }
+        if (scmUrl != null) {
+            return stripEnd(scmUrl, "/");
+        }
+        return null;
     }
 
 }
