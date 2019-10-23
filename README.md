@@ -83,6 +83,18 @@ You can configure Maven release plugin to update change log with each release.
 </plugin>
 ```
 
+In the case you don't like two commits for each release you can use simplified configuration
+which generates changelog only for release prepare goal:
+
+```xml
+<plugin>
+    <artifactId>maven-release-plugin</artifactId>
+    <configuration>
+        <preparationGoals>clean git-changelog:git-changelog scm:checkin -DpushChanges=false -Dincludes=CHANGELOG.md -Dmessage="[maven-release-plugin] Update CHANGELOG.md" verify</preparationGoals>
+    </configuration>
+</plugin>
+```
+
 ## Mustache templates
 
 The _git-changelog-maven-plugin_ contains [default template](src/main/resources/changelog.mustache) for change log
