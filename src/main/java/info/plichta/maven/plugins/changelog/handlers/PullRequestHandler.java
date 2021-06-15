@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 
 import static org.apache.commons.lang3.StringUtils.stripEnd;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 /**
  * {@link CommitHandler} capable of detecting Pull Request references in commit messages.
  */
@@ -41,8 +43,9 @@ public class PullRequestHandler implements CommitHandler {
 
         final Matcher matcher = PATTERN.matcher(shortMessage);
         if (matcher.matches()) {
-            final String title = commit.getCommit().getFullMessage().split("\n")[2];
-
+            final String fullMessage = commit.getCommit().getFullMessage();
+            final String[] lines = fullMessage.split("\n");
+            final String title = ArrayUtils.get(lines, 2, fullMessage);
             commit.setTitle(title);
             final String id = matcher.group(1);
             commit.getExtensions().put("pullRequest", new PullRequest(id, title, stripEnd(gitHubUrl, "/") + "/pull/" + id));
