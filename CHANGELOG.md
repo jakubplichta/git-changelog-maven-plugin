@@ -1,7 +1,13 @@
 # Change Log
 
+## 0.6.0
+* [PR #128](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/128) Handle weird Github single line merge commits
+* [PR #77](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/77) update example to generate only a single commit
+
 ## 0.5.1
-* Remove redundant slash in GitHub URI [57f0935](https://github.com/jakubplichta/git-changelog-maven-plugin/commit/57f09353d4d4a98e435e182fa1ea598584849527)
+* Update README.md [ff7c790](https://github.com/jakubplichta/git-changelog-maven-plugin/commit/ff7c790f6fe7a0c07479ab060b3c4d6270564ec4)
+* [PR #73](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/73) Remove redundant slash in GitHub URI
+    * Update CHANGELOG.md [43733b4](https://github.com/jakubplichta/git-changelog-maven-plugin/commit/43733b47ab2c2a2c56a6d885efbf7b6aee07db48)
 * [PR #72](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/72) [maven-release-plugin] release git-changelog-maven-plugin-0.5.0
 * [PR #71](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/71) Update README.md and CHANGELOG.md
 * [PR #69](https://github.com/jakubplichta/git-changelog-maven-plugin/pull/69) Support links to other repos than GitHub
