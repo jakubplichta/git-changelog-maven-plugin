@@ -56,6 +56,18 @@ public class PullRequestHandlerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testSingleLinePR() throws GitAPIException {
+        try (Git git = new Git(db)) {
+            final RevCommit commit = git.commit().setMessage("Merge pull request #1").call();
+            final CommitWrapper wrapper = new CommitWrapper(commit, SERVER);
+            handler.handle(wrapper);
+            assertThat(wrapper.getTitle(), is("Merge pull request #1"));
+            assertThat(wrapper.getExtensions(), hasKey("pullRequest"));
+            assertThat(wrapper.getExtensions(), hasValue(samePropertyValuesAs(new PullRequest("1", "Merge pull request #1", SERVER + "/pull/1"))));
+        }
+    }
+
+    @Test
     public void testNoPR() throws GitAPIException {
         try (Git git = new Git(db)) {
             final RevCommit commit = git.commit().setMessage("Ordinary commit").call();
