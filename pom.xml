@@ -21,7 +21,7 @@
 
     <groupId>info.plichta.maven.plugins</groupId>
     <artifactId>git-changelog-maven-plugin</artifactId>
-    <version>0.5.2-SNAPSHOT</version>
+    <version>0.6.0</version>
     <packaging>maven-plugin</packaging>
     <name>${project.artifactId}</name>
     <description>git changelog plugin</description>
