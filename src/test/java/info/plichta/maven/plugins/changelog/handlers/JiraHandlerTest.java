@@ -25,14 +25,16 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.junit.RepositoryTestCase;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.collection.IsMapContaining.hasValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class JiraHandlerTest extends RepositoryTestCase {
 
@@ -40,9 +42,16 @@ public class JiraHandlerTest extends RepositoryTestCase {
     private JiraHandler handler;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         handler = new JiraHandler(SERVER);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        super.tearDown();
     }
 
     @Test
