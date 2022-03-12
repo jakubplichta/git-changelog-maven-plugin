@@ -20,20 +20,22 @@ package info.plichta.maven.plugins.changelog;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.junit.RepositoryTestCase;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class CommitFilterTest extends RepositoryTestCase {
 
     private RevCommit commit;
     private RevCommit commit2;
 
-    @Before
+    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         try (Git git = new Git(db)) {
@@ -43,8 +45,14 @@ public class CommitFilterTest extends RepositoryTestCase {
         }
     }
 
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
     @Test
-    public void testIncludeAllNoExclude() throws Exception {
+    public void testIncludeAllNoExclude() {
         final CommitFilter filter = new CommitFilter(".*", null, null);
         assertThat(filter.test(commit), is(true));
         assertThat(filter.test(commit2), is(true));
