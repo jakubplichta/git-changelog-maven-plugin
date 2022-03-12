@@ -1,6 +1,6 @@
 # git-changelog-maven-plugin
 
-[![Build Status](https://travis-ci.org/jakubplichta/git-changelog-maven-plugin.svg?branch=master)](https://travis-ci.org/jakubplichta/git-changelog-maven-plugin) [![Coverage Status](https://coveralls.io/repos/jakubplichta/git-changelog-maven-plugin/badge.svg?branch=master)](https://coveralls.io/r/jakubplichta/git-changelog-maven-plugin?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.plichta.maven.plugins/git-changelog-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.plichta.maven.plugins/git-changelog-maven-plugin) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=jakubplichta/git-changelog-maven-plugin)](https://dependabot.com)
+[![Build Status](https://github.com/jakubplichta/git-changelog-maven-plugin/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/jakubplichta/git-changelog-maven-plugin/actions/workflows/build.yml?query=branch%3Amaster) [![codecov](https://codecov.io/gh/jakubplichta/git-changelog-maven-plugin/branch/master/graph/badge.svg?token=QTBM1WUSV6)](https://codecov.io/gh/jakubplichta/git-changelog-maven-plugin) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.plichta.maven.plugins/git-changelog-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.plichta.maven.plugins/git-changelog-maven-plugin)
 
 ## Introduction
 
